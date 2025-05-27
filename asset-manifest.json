@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/french_time_practice/static/css/main.10336fe3.css",
+    "main.js": "/french_time_practice/static/js/main.c81d2009.js",
+    "static/js/453.0a67b2c5.chunk.js": "/french_time_practice/static/js/453.0a67b2c5.chunk.js",
+    "index.html": "/french_time_practice/index.html",
+    "main.10336fe3.css.map": "/french_time_practice/static/css/main.10336fe3.css.map",
+    "main.c81d2009.js.map": "/french_time_practice/static/js/main.c81d2009.js.map",
+    "453.0a67b2c5.chunk.js.map": "/french_time_practice/static/js/453.0a67b2c5.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.10336fe3.css",
+    "static/js/main.c81d2009.js"
+  ]
+}
