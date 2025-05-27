@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import './App.css';
 
 const numberToFrench = [
@@ -65,7 +65,6 @@ const numberToFrench = [
 ];
 
 function getMinuteWord(minute) {
-  // Replace 'un' with 'une' for feminine nouns like "heure"
   if ([1, 21, 31, 41, 51].includes(minute)) {
     return numberToFrench[minute].replace(/\bun\b/, 'une');
   }
@@ -84,14 +83,31 @@ function timeToFrenchVariants(hour, minute) {
   const variants = new Set();
   const nextHour = (hour + 1) % 24;
 
-  const hourStr = getHourWord(hour);
+  const hourStr = getHourWord(hour); // e.g. midi
+  const hour24Str = `${numberToFrench[hour]} heures`; // e.g. douze heures
   const nextHourStr = getHourWord(nextHour);
 
-  // === Named special cases ===
+  const minuteWord = getMinuteWord(minute);
+  const minuteToNext = 60 - minute;
+  const minuteToNextWord = getMinuteWord(minuteToNext);
+
+  const isMoinsCandidate = [35, 40, 45, 50, 55].includes(minute);
+
+  // === 1. Literal time (always include)
   if (minute === 0) {
     variants.add(hourStr);
+    if (hour === 0) variants.add(`zéro heure`);
+    else variants.add(hour24Str);
+  } else {
+    variants.add(`${hourStr} ${minuteWord}`);
+    if (hour === 0) {
+      variants.add(`zéro heure ${minuteWord}`);
+    } else {
+      variants.add(`${hour24Str} ${minuteWord}`);
+    }
   }
 
+  // === 2. Named special cases
   if (minute === 15) {
     variants.add(`${hourStr} et quart`);
   }
@@ -101,21 +117,14 @@ function timeToFrenchVariants(hour, minute) {
     variants.add(`${hourStr} ${demie}`);
   }
 
-  if ([35, 40, 45, 50, 55].includes(minute)) {
-    variants.add(`${nextHourStr} moins ${getMinuteWord(60 - minute)}`);
+  if (minute === 45) {
+    variants.add(`${nextHourStr} moins le quart`);
+    variants.add(`${nextHourStr} moins ${minuteToNextWord}`);
   }
 
-  // === Literal form (only if not handled by special cases) ===
-  const isSpecial = [0, 15, 30, 35, 40, 45, 50, 55].includes(minute);
-
-  if (!isSpecial) {
-    if (hour === 0) {
-      variants.add(`minuit ${getMinuteWord(minute)}`);
-    } else if (hour === 12) {
-      variants.add(`midi ${getMinuteWord(minute)}`);
-    } else {
-      variants.add(`${hourStr} ${getMinuteWord(minute)}`);
-    }
+  // === 3. Other 'moins' constructions
+  if (isMoinsCandidate && minute !== 45) {
+    variants.add(`${getHourWord(nextHour)} moins ${minuteToNextWord}`);
   }
 
   return [...variants];
