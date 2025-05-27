@@ -79,52 +79,51 @@ function getHourWord(hour) {
   return `${numberToFrench[hour]} heures`;
 }
 
-function timeToFrenchVariants(hour, minute) {
+export function timeToFrenchVariants(hour, minute) {
   const variants = new Set();
   const nextHour = (hour + 1) % 24;
 
-  const hourStr = getHourWord(hour); // e.g. midi
-  const hour24Str = `${numberToFrench[hour]} heures`; // e.g. douze heures
+  const hourStr = getHourWord(hour);
+  const minuteStr = getMinuteWord(minute);
   const nextHourStr = getHourWord(nextHour);
 
-  const minuteWord = getMinuteWord(minute);
-  const minuteToNext = 60 - minute;
-  const minuteToNextWord = getMinuteWord(minuteToNext);
-
-  const isMoinsCandidate = [35, 40, 45, 50, 55].includes(minute);
-
-  // === 1. Literal time (always include)
   if (minute === 0) {
     variants.add(hourStr);
-    if (hour === 0) variants.add(`zéro heure`);
-    else variants.add(hour24Str);
-  } else {
-    variants.add(`${hourStr} ${minuteWord}`);
-    if (hour === 0) {
-      variants.add(`zéro heure ${minuteWord}`);
-    } else {
-      variants.add(`${hour24Str} ${minuteWord}`);
-    }
-  }
-
-  // === 2. Named special cases
-  if (minute === 15) {
+    if (hour === 12) variants.add('douze heures');
+  } else if (minute === 15) {
     variants.add(`${hourStr} et quart`);
-  }
-
-  if (minute === 30) {
-    const demie = hourStr.includes('heure') ? 'et demie' : 'et demi';
+    variants.add(`${hourStr} quinze`);
+    if (hour === 12) variants.add('douze heures quinze');
+  } else if (minute === 30) {
+    const demie = 'et demie';
     variants.add(`${hourStr} ${demie}`);
-  }
-
-  if (minute === 45) {
+    variants.add(`${hourStr} trente`);
+    if (hour === 12) {
+      variants.add('douze heures trente');
+      variants.add('midi et demi');
+    }
+  } else if (minute === 45) {
+    const minus = getMinuteWord(60 - minute);
+    variants.add(`${nextHourStr} moins ${minus}`);
     variants.add(`${nextHourStr} moins le quart`);
-    variants.add(`${nextHourStr} moins ${minuteToNextWord}`);
+    variants.add(`${getHourWord(hour)} quarante-cinq`);
+    if (hour === 12) variants.add('douze heures quarante-cinq');
+  } else if ([35, 40, 50, 55, 59].includes(minute)) {
+    const minus = getMinuteWord(60 - minute);
+    variants.add(`${nextHourStr} moins ${minus}`);
+    variants.add(`${getHourWord(hour)} ${minuteStr}`);
+    if (hour === 12) variants.add(`douze heures ${minuteStr}`);
+    if (hour === 11 && minute === 55) variants.add('douze heures moins cinq');
+    if (hour === 0 && minute === 59) variants.add('une heure moins une');
+    if (hour === 12 && minute === 59) variants.add('treize heures moins une');
+    if (hour === 1 && minute === 59) variants.add('deux heures moins une');
+  } else {
+    variants.add(`${getHourWord(hour)} ${minuteStr}`);
+    if (hour === 12) variants.add(`douze heures ${minuteStr}`);
   }
 
-  // === 3. Other 'moins' constructions
-  if (isMoinsCandidate && minute !== 45) {
-    variants.add(`${getHourWord(nextHour)} moins ${minuteToNextWord}`);
+  if (hour === 23 && minute === 59) {
+    variants.add('minuit moins une');
   }
 
   return [...variants];
