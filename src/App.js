@@ -290,7 +290,7 @@ function App() {
               pattern='[0-9]*'
               className='no-spinner'
             />
-            <span>h</span>
+            <span>:</span>
             <input
               type='number'
               min='0'
