@@ -108,22 +108,17 @@ export function timeToFrenchVariants(hour, minute) {
     variants.add(`${nextHourStr} moins le quart`);
     variants.add(`${getHourWord(hour)} quarante-cinq`);
     if (hour === 12) variants.add('douze heures quarante-cinq');
-  } else if ([35, 40, 50, 55, 59].includes(minute)) {
+  } else if (
+    [35, 40, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59].includes(minute)
+  ) {
     const minus = getMinuteWord(60 - minute);
     variants.add(`${nextHourStr} moins ${minus}`);
+    if (nextHour === 12) variants.add(`douze heures moins ${minus}`);
     variants.add(`${getHourWord(hour)} ${minuteStr}`);
     if (hour === 12) variants.add(`douze heures ${minuteStr}`);
-    if (hour === 11 && minute === 55) variants.add('douze heures moins cinq');
-    if (hour === 0 && minute === 59) variants.add('une heure moins une');
-    if (hour === 12 && minute === 59) variants.add('treize heures moins une');
-    if (hour === 1 && minute === 59) variants.add('deux heures moins une');
   } else {
     variants.add(`${getHourWord(hour)} ${minuteStr}`);
     if (hour === 12) variants.add(`douze heures ${minuteStr}`);
-  }
-
-  if (hour === 23 && minute === 59) {
-    variants.add('minuit moins une');
   }
 
   return [...variants];
@@ -203,13 +198,11 @@ function App() {
       setStreak(0);
       generateNew();
     }
-    // Reset input fields for next round
     setInputHour('');
     setInputMinute('');
     hourInputRef.current.focus();
   };
 
-  // Add a function to reveal the current time
   const handleReveal = () => {
     setRevealed((prev) => [
       ...prev,
@@ -217,13 +210,12 @@ function App() {
         hour: current.hour,
         minute: current.minute,
         variants: timeToFrenchVariants(current.hour, current.minute),
-        correct: null, // Not a graded answer
+        correct: null,
       },
     ]);
     generateNew();
   };
 
-  // Add a function to clear the revealed list
   const handleClearRevealed = () => {
     setRevealed([]);
     setStreak(0);
@@ -233,7 +225,6 @@ function App() {
     setInputMinute('');
   };
 
-  // Add a start handler
   const handleStart = () => {
     setStarted(true);
     generateNew();
@@ -281,7 +272,6 @@ function App() {
               onChange={(e) => {
                 const val = e.target.value;
                 setInputHour(val);
-                // If two digits entered, move focus to minute
                 if (val.length === 2 && minuteInputRef.current) {
                   minuteInputRef.current.focus();
                 }
@@ -308,7 +298,6 @@ function App() {
               placeholder='mm'
               value={inputMinute}
               onChange={(e) => {
-                // Always keep two digits
                 let val = e.target.value;
                 setInputMinute(val);
               }}
@@ -353,7 +342,6 @@ function App() {
             </button>
           </div>
 
-          {/* Revealed times list */}
           <div className='revealed-list'>
             {revealed
               .slice()
