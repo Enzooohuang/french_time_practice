@@ -285,7 +285,7 @@ function App() {
                   minuteInputRef.current.focus();
                 }
               }}
-              style={{ width: 30 }}
+              style={{ width: 30, margin: 0 }}
               inputMode='numeric'
               pattern='[0-9]*'
               className='no-spinner'
@@ -312,12 +312,17 @@ function App() {
                 }
               }}
               ref={minuteInputRef}
-              style={{ width: 30 }}
+              style={{ width: 30, margin: 0 }}
               inputMode='numeric'
               pattern='[0-9]*'
               className='no-spinner'
             />
-            <button type='submit'>Submit</button>
+            <button
+              type='submit'
+              style={{ marginLeft: 10 }}
+            >
+              Submit
+            </button>
           </form>
 
           <div className='buttons'>
