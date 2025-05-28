@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 const numberToFrench = [
@@ -140,9 +140,18 @@ function App() {
   const [revealed, setRevealed] = useState([]);
   const [started, setStarted] = useState(false);
 
-  // Ref for the minute input
   const minuteInputRef = useRef(null);
   const hourInputRef = useRef(null);
+  const frenchVoice = useRef(null);
+
+  useEffect(() => {
+    const updateVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      frenchVoice.current = voices.find((v) => v.lang.startsWith('fr'));
+    };
+    window.speechSynthesis.onvoiceschanged = updateVoices;
+    updateVoices();
+  }, []);
 
   const speak = (hour, minute, variant = null) => {
     window.speechSynthesis.cancel();
@@ -150,7 +159,8 @@ function App() {
     const toSpeak =
       variant || variants[Math.floor(Math.random() * variants.length)];
     const utterance = new SpeechSynthesisUtterance(toSpeak);
-    utterance.lang = 'fr-CA';
+    utterance.lang = 'fr-FR';
+    utterance.voice = frenchVoice.current;
     window.speechSynthesis.speak(utterance);
   };
 
