@@ -41,6 +41,13 @@
 .answer-reveal {
   margin-top: 20px;
   font-size: 1.3em;
+  text-align: left;
+  margin-left: 0;
+}
+
+.answer-reveal b {
+  display: block;
+  text-align: center;
 }
 
 .no-spinner::-webkit-outer-spin-button,
@@ -50,4 +57,9 @@
 }
 .no-spinner {
   -moz-appearance: textfield;
+}
+
+.revealed-list {
+  text-align: left;
+  margin-left: 0;
 }
